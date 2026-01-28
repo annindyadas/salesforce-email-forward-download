@@ -56,8 +56,8 @@ export default class EmailForwarderModal extends LightningElement {
     @track isSending = false;
     @track isDownloading = false;
     
-    // Recipient email - can be made configurable via design attribute
-    @track recipientEmail = 'annindya.das@aig.com';
+    // Recipient email - user must enter this
+    @track recipientEmail = '';
     
     columns = COLUMNS;
     
