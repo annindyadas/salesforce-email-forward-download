@@ -1,0 +1,99 @@
+<template>
+    <div class="card-wrapper">
+        <!-- Custom Header -->
+        <div class="custom-header slds-p-around_medium">
+            <div class="slds-grid slds-grid_vertical-align-center">
+                <lightning-icon icon-name="utility:email" size="small" class="slds-m-right_small header-icon"></lightning-icon>
+                <span class="header-title">{modalTitle}</span>
+            </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium slds-p-top_medium">
+            <!-- Loading Spinner -->
+            <template lwc:if={isLoading}>
+                <div class="slds-is-relative slds-p-vertical_xx-large">
+                    <lightning-spinner alternative-text="Loading emails..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Error Message -->
+            <template lwc:if={error}>
+                <div class="slds-notify slds-notify_alert slds-alert_error slds-m-bottom_medium" role="alert">
+                    <lightning-icon icon-name="utility:error" alternative-text="Error" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                    <span>{error}</span>
+                </div>
+            </template>
+
+            <!-- Main Content - Only show when not loading and no error -->
+            <template lwc:if={showContent}>
+                <!-- Recipient Email Input -->
+                <div class="slds-m-bottom_medium">
+                    <lightning-input
+                        type="email"
+                        label="Forward To Email Address"
+                        value={recipientEmail}
+                        onchange={handleRecipientChange}
+                        placeholder="Enter recipient email address"
+                        required
+                        message-when-value-missing="Please enter a recipient email address">
+                    </lightning-input>
+                </div>
+
+                <!-- No Emails Message -->
+                <template lwc:if={noEmails}>
+                    <div class="slds-p-vertical_large slds-text-align_center">
+                        <lightning-icon icon-name="utility:email" size="large" class="slds-m-bottom_medium"></lightning-icon>
+                        <h3 class="slds-text-heading_medium slds-m-bottom_x-small">No Emails Found</h3>
+                        <p class="slds-text-body_regular slds-text-color_weak">
+                            There are no email messages associated with this record.
+                        </p>
+                    </div>
+                </template>
+
+                <!-- Email Data Table -->
+                <template lwc:if={hasEmails}>
+                    <div class="datatable-container">
+                        <lightning-datatable
+                            key-field="id"
+                            data={emails}
+                            columns={columns}
+                            sorted-by={sortedBy}
+                            sorted-direction={sortedDirection}
+                            onsort={handleSort}
+                            onrowselection={handleRowSelection}>
+                        </lightning-datatable>
+                    </div>
+                </template>
+            </template>
+        </div>
+
+        <!-- Footer -->
+        <div class="slds-p-around_medium slds-border_top">
+            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                <div class="slds-col">
+                    <template lwc:if={hasSelectedEmails}>
+                        <span class="slds-text-body_small slds-text-color_weak">
+                            <lightning-icon icon-name="utility:info" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                            Selected emails will be forwarded as .eml attachments
+                        </span>
+                    </template>
+                </div>
+                <div class="slds-col slds-text-align_right">
+                    <lightning-button
+                        label="Close"
+                        onclick={handleClose}
+                        class="slds-m-right_x-small">
+                    </lightning-button>
+                    <lightning-button
+                        variant="brand"
+                        label={sendButtonLabel}
+                        onclick={handleSend}
+                        disabled={isSendDisabled}
+                        icon-name="utility:email">
+                    </lightning-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

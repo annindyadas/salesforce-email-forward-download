@@ -1,0 +1,42 @@
+/* Card Wrapper */
+.card-wrapper {
+    background-color: white;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #dddbda;
+}
+
+/* Custom Header Styling - Full width blue background */
+.custom-header {
+    background-color: #0176d3;
+    border-radius: 0.25rem 0.25rem 0 0;
+}
+
+.header-title {
+    color: white;
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.header-icon {
+    --slds-c-icon-color-foreground-default: white;
+}
+
+/* Datatable Container - ensure proper height and scrolling */
+.datatable-container {
+    min-height: 200px;
+    max-height: 450px;
+    overflow-y: auto;
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+}
+
+/* Loading spinner positioning */
+.slds-is-relative {
+    min-height: 200px;
+}
+
+/* Ensure datatable displays properly */
+lightning-datatable {
+    display: block;
+}
