@@ -67,6 +67,77 @@ public class CaseEmailForwarder {
     }
 
     /**
+     * AuraEnabled method for LWC integration
+     * Returns selected emails as EML content for client-side ZIP creation
+     */
+    @AuraEnabled
+    public static List<EmailContentWrapper> getEmailsForDownload(List<Id> emailIds) {
+        try {
+            if (emailIds == null || emailIds.isEmpty()) {
+                throw new AuraHandledException('No emails selected for download.');
+            }
+
+            Map<Id, EmailMessage> emailMap = new Map<Id, EmailMessage>([
+                SELECT Subject, HtmlBody, TextBody, FromAddress, ToAddress, MessageDate 
+                FROM EmailMessage 
+                WHERE Id IN :emailIds
+            ]);
+
+            if (emailMap.isEmpty()) {
+                throw new AuraHandledException('No email messages found for the provided IDs.');
+            }
+
+            List<EmailContentWrapper> emailContents = new List<EmailContentWrapper>();
+            
+            for (Id emailId : emailIds) {
+                EmailMessage em = emailMap.get(emailId);
+                if (em == null) continue;
+
+                String fromAddr = em.FromAddress != null ? em.FromAddress : '';
+                String toAddr = em.ToAddress != null ? em.ToAddress : '';
+                String subject = em.Subject != null ? em.Subject : '(No Subject)';
+                String dateStr = em.MessageDate != null ? em.MessageDate.formatGmt('EEE, d MMM yyyy HH:mm:ss Z') : '';
+                String body = em.HtmlBody != null ? em.HtmlBody : (em.TextBody != null ? em.TextBody : '');
+
+                String emlContent = 'From: ' + fromAddr + '\r\n' +
+                                    'To: ' + toAddr + '\r\n' +
+                                    'Date: ' + dateStr + '\r\n' +
+                                    'Subject: ' + subject + '\r\n' +
+                                    'MIME-Version: 1.0\r\n' +
+                                    'Content-Type: text/html; charset=UTF-8\r\n\r\n' + 
+                                    body;
+                
+                String safeSubject = subject.replaceAll('[^a-zA-Z0-9]', '_');
+                if (String.isBlank(safeSubject)) {
+                    safeSubject = 'Email_' + emailId;
+                }
+                
+                emailContents.add(new EmailContentWrapper(safeSubject + '.eml', emlContent));
+            }
+            
+            return emailContents;
+            
+        } catch (AuraHandledException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AuraHandledException('Error preparing emails for download: ' + e.getMessage());
+        }
+    }
+
+    /**
+     * Wrapper class for email content to be used in client-side ZIP creation
+     */
+    public class EmailContentWrapper {
+        @AuraEnabled public String fileName { get; set; }
+        @AuraEnabled public String content { get; set; }
+        
+        public EmailContentWrapper(String fileName, String content) {
+            this.fileName = fileName;
+            this.content = content;
+        }
+    }
+
+    /**
      * Core method to forward emails to a recipient
      * Returns a status message
      */

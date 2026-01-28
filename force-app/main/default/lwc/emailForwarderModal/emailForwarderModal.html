@@ -70,19 +70,19 @@
 
         <!-- Footer -->
         <div class="slds-p-around_medium slds-border_top">
-            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+            <div class="slds-grid slds-grid_align-end slds-grid_vertical-align-center">
                 <div class="slds-col">
-                    <template lwc:if={hasSelectedEmails}>
-                        <span class="slds-text-body_small slds-text-color_weak">
-                            <lightning-icon icon-name="utility:info" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
-                            Selected emails will be forwarded as .eml attachments
-                        </span>
-                    </template>
-                </div>
-                <div class="slds-col slds-text-align_right">
                     <lightning-button
-                        label="Close"
+                        label="Cancel"
                         onclick={handleClose}
+                        class="slds-m-right_x-small">
+                    </lightning-button>
+                    <lightning-button
+                        variant="neutral"
+                        label={downloadButtonLabel}
+                        onclick={handleDownload}
+                        disabled={isDownloadDisabled}
+                        icon-name="utility:download"
                         class="slds-m-right_x-small">
                     </lightning-button>
                     <lightning-button
