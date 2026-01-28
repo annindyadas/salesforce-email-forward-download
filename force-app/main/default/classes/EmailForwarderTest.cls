@@ -275,7 +275,7 @@ private class EmailForwarderTest {
         // Verify wrapper properties
         for (EmailForwarder.EmailContentWrapper wrapper : result) {
             System.assertNotEquals(null, wrapper.fileName, 'File name should not be null');
-            System.assertNotEquals(null, wrapper.emlContent, 'EML content should not be null');
+            System.assertNotEquals(null, wrapper.content, 'EML content should not be null');
             System.assert(wrapper.fileName.endsWith('.eml'), 'File name should end with .eml');
         }
     }
@@ -311,47 +311,6 @@ private class EmailForwarderTest {
     }
     
     /**
-     * @description Test forwardEmails invocable method with valid input
-     */
-    @isTest
-    static void testForwardEmails_ValidInput() {
-        Case testCase = getTestCase();
-        
-        Test.startTest();
-        List<String> results = EmailForwarder.forwardEmails(new List<Id>{ testCase.Id });
-        Test.stopTest();
-        
-        System.assertNotEquals(null, results, 'Results should not be null');
-        System.assertEquals(1, results.size(), 'Should return 1 result');
-    }
-    
-    /**
-     * @description Test forwardEmails invocable method with empty list
-     */
-    @isTest
-    static void testForwardEmails_EmptyList() {
-        Test.startTest();
-        List<String> results = EmailForwarder.forwardEmails(new List<Id>());
-        Test.stopTest();
-        
-        System.assertNotEquals(null, results, 'Results should not be null');
-        System.assertEquals(0, results.size(), 'Should return empty list');
-    }
-    
-    /**
-     * @description Test forwardEmails invocable method with null list
-     */
-    @isTest
-    static void testForwardEmails_NullList() {
-        Test.startTest();
-        List<String> results = EmailForwarder.forwardEmails(null);
-        Test.stopTest();
-        
-        System.assertNotEquals(null, results, 'Results should not be null');
-        System.assertEquals(0, results.size(), 'Should return empty list');
-    }
-    
-    /**
      * @description Test EmailMessageWrapper properties
      */
     @isTest
@@ -384,9 +343,9 @@ private class EmailForwarderTest {
         System.assertEquals(1, wrappers.size(), 'Should return 1 wrapper');
         EmailForwarder.EmailContentWrapper wrapper = wrappers[0];
         System.assertNotEquals(null, wrapper.fileName, 'File name should not be null');
-        System.assertNotEquals(null, wrapper.emlContent, 'EML content should not be null');
-        System.assert(wrapper.emlContent.contains('MIME-Version:'), 'EML should contain MIME header');
-        System.assert(wrapper.emlContent.contains('Content-Type:'), 'EML should contain Content-Type');
+        System.assertNotEquals(null, wrapper.content, 'EML content should not be null');
+        System.assert(wrapper.content.contains('MIME-Version:'), 'EML should contain MIME header');
+        System.assert(wrapper.content.contains('Content-Type:'), 'EML should contain Content-Type');
     }
     
     /**
@@ -407,7 +366,7 @@ private class EmailForwarderTest {
         Test.stopTest();
         
         System.assertEquals(1, result.size(), 'Should return 1 email');
-        System.assert(result[0].emlContent.contains('Content-Type: text/html'), 
+        System.assert(result[0].content.contains('Content-Type: text/html'), 
             'EML should indicate HTML content type');
     }
     
@@ -437,7 +396,7 @@ private class EmailForwarderTest {
         Test.stopTest();
         
         System.assertEquals(1, result.size(), 'Should return 1 email');
-        System.assert(result[0].emlContent.contains('Content-Type: text/plain'), 
+        System.assert(result[0].content.contains('Content-Type: text/plain'), 
             'EML should indicate plain text content type');
     }
     

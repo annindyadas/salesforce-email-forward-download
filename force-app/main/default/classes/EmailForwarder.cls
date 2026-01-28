@@ -14,25 +14,8 @@ public with sharing class EmailForwarder {
     private static final Integer MAX_EMAILS = 1000;
 
     /**
-     * Invocable method for Flow/Process Builder integration
-     */
-    @InvocableMethod(label='Forward Emails as EML Attachments' category='Email')
-    public static void forwardEmails(List<List<Id>> emailIdBatches) {
-        Set<Id> allEmailIds = new Set<Id>();
-        for (List<Id> batch : emailIdBatches) {
-            allEmailIds.addAll(batch);
-        }
-
-        if (allEmailIds.isEmpty()) return;
-
-        // Default recipient - can be configured
-        String recipientEmail = '';
-        forwardEmailsToRecipient(new List<Id>(allEmailIds), recipientEmail);
-    }
-
-    /**
-     * AuraEnabled method for LWC integration
      * Forwards selected emails to the specified recipient
+     * Called by the LWC when user clicks Send button
      */
     @AuraEnabled
     public static String forwardSelectedEmails(List<Id> emailIds, String recipientEmail) {
