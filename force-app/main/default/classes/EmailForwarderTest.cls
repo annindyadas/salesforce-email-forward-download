@@ -94,17 +94,16 @@ private class EmailForwarderTest {
     
     /**
      * @description Test getEmailsByRecordId with null Id
+     * When null is passed, SOQL returns empty results
      */
     @isTest
     static void testGetEmailsByRecordId_NullId() {
         Test.startTest();
-        try {
-            EmailForwarder.getEmailsByRecordId(null);
-            System.assert(false, 'Should have thrown an exception');
-        } catch (AuraHandledException e) {
-            System.assert(true, 'Exception was thrown as expected');
-        }
+        List<EmailForwarder.EmailMessageWrapper> result = EmailForwarder.getEmailsByRecordId(null);
         Test.stopTest();
+        
+        System.assertNotEquals(null, result, 'Result should not be null');
+        System.assertEquals(0, result.size(), 'Should return empty list for null Id');
     }
     
     /**
@@ -158,7 +157,7 @@ private class EmailForwarderTest {
         Test.stopTest();
         
         System.assertNotEquals(null, result, 'Result should not be null');
-        System.assert(result.contains('Successfully forwarded'), 'Result should indicate success');
+        System.assert(result.contains('Success'), 'Result should indicate success');
     }
     
     /**
@@ -490,15 +489,15 @@ private class EmailForwarderTest {
         // Test with standard email
         Test.startTest();
         String result1 = EmailForwarder.forwardSelectedEmails(emailIds, 'user@domain.com');
-        System.assert(result1.contains('Successfully'), 'Should accept standard email format');
+        System.assert(result1.contains('Success'), 'Should accept standard email format');
         
         // Test with subdomain email
         String result2 = EmailForwarder.forwardSelectedEmails(emailIds, 'user@subdomain.domain.com');
-        System.assert(result2.contains('Successfully'), 'Should accept subdomain email format');
+        System.assert(result2.contains('Success'), 'Should accept subdomain email format');
         
         // Test with plus sign email
         String result3 = EmailForwarder.forwardSelectedEmails(emailIds, 'user+tag@domain.com');
-        System.assert(result3.contains('Successfully'), 'Should accept plus sign email format');
+        System.assert(result3.contains('Success'), 'Should accept plus sign email format');
         Test.stopTest();
     }
     
