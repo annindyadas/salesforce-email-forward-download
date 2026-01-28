@@ -1,4 +1,4 @@
-import { LightningElement, api, track, wire } from 'lwc';
+import { LightningElement, api, track } from 'lwc';
 import { CloseActionScreenEvent } from 'lightning/actions';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getEmailsByRecordId from '@salesforce/apex/EmailForwarder.getEmailsByRecordId';
@@ -116,19 +116,30 @@ export default class EmailForwarderModal extends LightningElement {
         return `Forward Emails (${this.totalCount} available)`;
     }
 
-    // Wire adapter to get emails for the current record
-    @wire(getEmailsByRecordId, { recordId: '$recordId' })
-    wiredEmails({ error, data }) {
-        this.isLoading = false;
-        if (data) {
-            this.emails = [...data];
-            this.error = undefined;
-            // Apply initial sorting
-            this.sortData(this.sortedBy, this.sortedDirection);
-        } else if (error) {
-            this.error = this.reduceErrors(error);
-            this.emails = [];
-        }
+    // Lifecycle hook - called when component is inserted into the DOM
+    connectedCallback() {
+        this.loadEmails();
+    }
+
+    // Imperative call to fetch fresh emails from server
+    loadEmails() {
+        this.isLoading = true;
+        this.error = undefined;
+        
+        getEmailsByRecordId({ recordId: this.recordId })
+            .then(data => {
+                this.emails = [...data];
+                this.error = undefined;
+                // Apply initial sorting
+                this.sortData(this.sortedBy, this.sortedDirection);
+            })
+            .catch(error => {
+                this.error = this.reduceErrors(error);
+                this.emails = [];
+            })
+            .finally(() => {
+                this.isLoading = false;
+            });
     }
 
     // Handle row selection in the datatable

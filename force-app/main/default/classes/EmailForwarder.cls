@@ -44,8 +44,9 @@ public with sharing class EmailForwarder {
     /**
      * Retrieves all EmailMessages related to a specific record
      * Enforces CRUD/FLS security checks
+     * Note: Not cacheable to ensure fresh data on each call
      */
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<EmailMessageWrapper> getEmailsByRecordId(Id recordId) {
         try {
             // Check if user has read access to EmailMessage object
