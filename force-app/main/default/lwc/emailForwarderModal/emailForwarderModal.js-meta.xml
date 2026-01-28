@@ -6,16 +6,10 @@
     <description>A modal component to select and forward emails as EML attachments</description>
     <targets>
         <target>lightning__RecordAction</target>
-        <target>lightning__RecordPage</target>
-        <target>lightning__AppPage</target>
-        <target>lightning__HomePage</target>
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__RecordAction">
             <actionType>ScreenAction</actionType>
-        </targetConfig>
-        <targetConfig targets="lightning__RecordPage">
-            <property name="recordId" type="String" label="Record Id" description="The record Id to fetch emails for"/>
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
