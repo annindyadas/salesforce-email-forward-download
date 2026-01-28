@@ -45,7 +45,19 @@ const COLUMNS = [
 ];
 
 export default class EmailForwarderModal extends LightningElement {
-    @api recordId;
+    _recordId;
+    
+    // Use setter to trigger data load when recordId is set by the framework
+    @api
+    get recordId() {
+        return this._recordId;
+    }
+    set recordId(value) {
+        if (value && value !== this._recordId) {
+            this._recordId = value;
+            this.loadEmails();
+        }
+    }
     
     @track emails = [];
     @track selectedEmailIds = [];
@@ -55,9 +67,6 @@ export default class EmailForwarderModal extends LightningElement {
     @track sortedDirection = 'desc';
     @track isSending = false;
     @track isDownloading = false;
-    
-    // Flag to prevent duplicate loading
-    isInitialized = false;
     
     // Recipient email - user must enter this
     @track recipientEmail = '';
@@ -119,15 +128,6 @@ export default class EmailForwarderModal extends LightningElement {
         return `Forward Emails (${this.totalCount} available)`;
     }
 
-    // Lifecycle hook - called when component is inserted into the DOM
-    connectedCallback() {
-        // Prevent duplicate loading if already initialized
-        if (!this.isInitialized) {
-            this.isInitialized = true;
-            this.loadEmails();
-        }
-    }
-
     // Imperative call to fetch fresh emails from server
     loadEmails() {
         this.isLoading = true;
@@ -136,7 +136,7 @@ export default class EmailForwarderModal extends LightningElement {
         this.emails = [];
         this.selectedEmailIds = [];
         
-        getEmailsByRecordId({ recordId: this.recordId })
+        getEmailsByRecordId({ recordId: this._recordId })
             .then(data => {
                 this.emails = data ? [...data] : [];
                 this.error = undefined;
