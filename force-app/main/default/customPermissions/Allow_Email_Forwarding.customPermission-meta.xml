@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Allows users to forward emails to external recipients as EML attachments. Users without this permission can only download emails.</description>
+    <isLicensed>false</isLicensed>
+    <label>Allow Email Forwarding</label>
+</CustomPermission>

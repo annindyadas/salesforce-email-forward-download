@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Allows users to download emails as EML files. This is the base permission required to use the Email Forwarder feature.</description>
+    <isLicensed>false</isLicensed>
+    <label>Allow Email Download</label>
+</CustomPermission>

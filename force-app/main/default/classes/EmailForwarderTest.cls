@@ -152,6 +152,9 @@ private class EmailForwarderTest {
             emailIds.add(em.Id);
         }
         
+        // Bypass permission checks for test
+        EmailForwarder.bypassPermissionChecks = true;
+        
         Test.startTest();
         String result = EmailForwarder.forwardSelectedEmails(emailIds, 'test@example.com');
         Test.stopTest();
@@ -264,6 +267,9 @@ private class EmailForwarderTest {
             emailIds.add(em.Id);
         }
         
+        // Bypass permission checks for test
+        EmailForwarder.bypassPermissionChecks = true;
+        
         Test.startTest();
         List<EmailForwarder.EmailContentWrapper> result = EmailForwarder.getEmailsForDownload(emailIds);
         Test.stopTest();
@@ -335,6 +341,9 @@ private class EmailForwarderTest {
         List<EmailMessage> testEmails = getTestEmails();
         List<String> emailIds = new List<String>{ testEmails[0].Id };
         
+        // Bypass permission checks for test
+        EmailForwarder.bypassPermissionChecks = true;
+        
         Test.startTest();
         List<EmailForwarder.EmailContentWrapper> wrappers = EmailForwarder.getEmailsForDownload(emailIds);
         Test.stopTest();
@@ -357,6 +366,9 @@ private class EmailForwarderTest {
             WHERE Subject = 'Test Email 1 - Incoming' 
             LIMIT 1
         ];
+        
+        // Bypass permission checks for test
+        EmailForwarder.bypassPermissionChecks = true;
         
         Test.startTest();
         List<EmailForwarder.EmailContentWrapper> result = EmailForwarder.getEmailsForDownload(
@@ -387,6 +399,9 @@ private class EmailForwarderTest {
             Incoming = true
         );
         insert textOnlyEmail;
+        
+        // Bypass permission checks for test
+        EmailForwarder.bypassPermissionChecks = true;
         
         Test.startTest();
         List<EmailForwarder.EmailContentWrapper> result = EmailForwarder.getEmailsForDownload(
@@ -452,6 +467,9 @@ private class EmailForwarderTest {
         );
         insert specialEmail;
         
+        // Bypass permission checks for test
+        EmailForwarder.bypassPermissionChecks = true;
+        
         Test.startTest();
         List<EmailForwarder.EmailContentWrapper> result = EmailForwarder.getEmailsForDownload(
             new List<String>{ specialEmail.Id }
@@ -471,6 +489,9 @@ private class EmailForwarderTest {
         List<String> emailIds = new List<String>();
         emailIds.add(testEmails[0].Id);
         
+        // Bypass permission checks for test
+        EmailForwarder.bypassPermissionChecks = true;
+        
         Test.startTest();
         List<EmailForwarder.EmailContentWrapper> result = EmailForwarder.getEmailsForDownload(emailIds);
         Test.stopTest();
@@ -485,6 +506,9 @@ private class EmailForwarderTest {
     static void testForwardSelectedEmails_VariousEmailFormats() {
         List<EmailMessage> testEmails = getTestEmails();
         List<String> emailIds = new List<String>{ testEmails[0].Id };
+        
+        // Bypass permission checks for test
+        EmailForwarder.bypassPermissionChecks = true;
         
         // Test with standard email
         Test.startTest();
@@ -628,6 +652,9 @@ private class EmailForwarderTest {
         );
         insert cdl;
         
+        // Bypass permission checks for test
+        EmailForwarder.bypassPermissionChecks = true;
+        
         Test.startTest();
         List<EmailForwarder.EmailContentWrapper> result = EmailForwarder.getEmailsForDownload(
             new List<String>{ emailWithAttachment.Id }
@@ -678,6 +705,9 @@ private class EmailForwarderTest {
             ShareType = 'V'
         );
         insert cdl;
+        
+        // Bypass permission checks for test
+        EmailForwarder.bypassPermissionChecks = true;
         
         Test.startTest();
         String result = EmailForwarder.forwardSelectedEmails(
@@ -754,5 +784,36 @@ private class EmailForwarderTest {
             }
         }
         System.assert(foundEmail, 'Should find the email with multiple attachments');
+    }
+    
+    /**
+     * @description Test getUserPermissions returns FeaturePermissions wrapper
+     */
+    @isTest
+    static void testGetUserPermissions() {
+        Test.startTest();
+        EmailForwarder.FeaturePermissions result = EmailForwarder.getUserPermissions();
+        Test.stopTest();
+        
+        System.assertNotEquals(null, result, 'Result should not be null');
+        // FeatureManagement.checkPermission returns false in test context without 
+        // explicit permission set assignment, so verify the structure is correct
+        System.assertEquals(false, result.canForward, 'canForward should be false without permission');
+        System.assertEquals(false, result.canDownload, 'canDownload should be false without permission');
+    }
+    
+    /**
+     * @description Test FeaturePermissions wrapper structure
+     */
+    @isTest
+    static void testFeaturePermissionsWrapper() {
+        Test.startTest();
+        EmailForwarder.FeaturePermissions permissions = new EmailForwarder.FeaturePermissions();
+        permissions.canForward = true;
+        permissions.canDownload = true;
+        Test.stopTest();
+        
+        System.assertEquals(true, permissions.canForward, 'canForward should be true when set');
+        System.assertEquals(true, permissions.canDownload, 'canDownload should be true when set');
     }
 }

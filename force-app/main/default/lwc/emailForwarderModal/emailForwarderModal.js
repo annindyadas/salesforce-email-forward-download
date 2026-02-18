@@ -1,9 +1,10 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api, track, wire } from 'lwc';
 import { CloseActionScreenEvent } from 'lightning/actions';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getEmailsByRecordId from '@salesforce/apex/EmailForwarder.getEmailsByRecordId';
 import forwardSelectedEmails from '@salesforce/apex/EmailForwarder.forwardSelectedEmails';
 import getEmailsForDownload from '@salesforce/apex/EmailForwarder.getEmailsForDownload';
+import getUserPermissions from '@salesforce/apex/EmailForwarder.getUserPermissions';
 import { createZipFile, downloadZipFile, reduceErrors } from 'c/emailUtils';
 
 const COLUMNS = [
@@ -80,11 +81,39 @@ export default class EmailForwarderModal extends LightningElement {
     // Recipient email - user must enter this
     @track recipientEmail = '';
     
+    // Feature permissions
+    @track canForward = false;
+    @track canDownload = false;
+    
     columns = COLUMNS;
+    
+    // Wire adapter to get user permissions
+    @wire(getUserPermissions)
+    wiredPermissions({ error, data }) {
+        if (data) {
+            this.canForward = data.canForward;
+            this.canDownload = data.canDownload;
+        } else if (error) {
+            console.error('Error loading permissions:', error);
+            // Default to false if error
+            this.canForward = false;
+            this.canDownload = false;
+        }
+    }
     
     // Computed property to show content (not loading and no error)
     get showContent() {
         return !this.isLoading && !this.error;
+    }
+    
+    // Show forward section only if user has permission
+    get showForwardSection() {
+        return this.canForward;
+    }
+    
+    // Show download button only if user has permission
+    get showDownloadButton() {
+        return this.canDownload;
     }
 
     get hasEmails() {

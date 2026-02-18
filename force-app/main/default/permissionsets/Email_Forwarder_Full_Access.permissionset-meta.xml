@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Allow_Email_Download</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Allow_Email_Forwarding</name>
+    </customPermissions>
+    <classAccesses>
+        <apexClass>EmailForwarder</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>EmailForwarderTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <description>Full access to Email Forwarder features - allows both downloading and forwarding emails. Recommended for System Administrators and power users.</description>
+    <flowAccesses>
+        <enabled>true</enabled>
+        <flow>Download_Email</flow>
+    </flowAccesses>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Email Forwarder Full Access</label>
+</PermissionSet>

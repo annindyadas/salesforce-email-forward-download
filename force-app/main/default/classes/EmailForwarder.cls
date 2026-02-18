@@ -5,9 +5,12 @@
  * 
  * Security: Uses 'with sharing' to enforce record-level security
  * All SOQL queries check CRUD/FLS permissions before execution
+ * Custom Permissions control feature access:
+ * - Allow_Email_Download: Required to download emails
+ * - Allow_Email_Forwarding: Required to forward emails
  * 
  * @author Annindya Das
- * @version 2.0 - Added attachment support
+ * @version 3.0 - Added custom permission controls
  */
 public with sharing class EmailForwarder {
 
@@ -22,14 +25,58 @@ public with sharing class EmailForwarder {
     
     // MIME boundary for multipart messages
     private static final String BOUNDARY = '----=_Part_' + String.valueOf(DateTime.now().getTime());
+    
+    // Custom Permission API Names
+    private static final String PERMISSION_FORWARD = 'Allow_Email_Forwarding';
+    private static final String PERMISSION_DOWNLOAD = 'Allow_Email_Download';
+    
+    // Test-visible flag to bypass permission checks in unit tests
+    @TestVisible
+    private static Boolean bypassPermissionChecks = false;
+
+    /**
+     * Check if current user has the Forward Email permission
+     * @return Boolean indicating if user can forward emails
+     */
+    @AuraEnabled(cacheable=true)
+    public static Boolean hasForwardPermission() {
+        return FeatureManagement.checkPermission(PERMISSION_FORWARD);
+    }
+    
+    /**
+     * Check if current user has the Download Email permission
+     * @return Boolean indicating if user can download emails
+     */
+    @AuraEnabled(cacheable=true)
+    public static Boolean hasDownloadPermission() {
+        return FeatureManagement.checkPermission(PERMISSION_DOWNLOAD);
+    }
+    
+    /**
+     * Get user's feature permissions for the Email Forwarder
+     * @return FeaturePermissions wrapper with both permission values
+     */
+    @AuraEnabled(cacheable=true)
+    public static FeaturePermissions getUserPermissions() {
+        FeaturePermissions perms = new FeaturePermissions();
+        perms.canForward = FeatureManagement.checkPermission(PERMISSION_FORWARD);
+        perms.canDownload = FeatureManagement.checkPermission(PERMISSION_DOWNLOAD);
+        return perms;
+    }
 
     /**
      * Forwards selected emails to the specified recipient
      * Called by the LWC when user clicks Send button
+     * Requires Allow_Email_Forwarding custom permission
      */
     @AuraEnabled
     public static String forwardSelectedEmails(List<Id> emailIds, String recipientEmail) {
         try {
+            // Check custom permission first (bypass in test context)
+            if (!bypassPermissionChecks && !FeatureManagement.checkPermission(PERMISSION_FORWARD)) {
+                throw new AuraHandledException('You do not have permission to forward emails. Please contact your administrator.');
+            }
+            
             if (emailIds == null || emailIds.isEmpty()) {
                 throw new AuraHandledException('No emails selected for forwarding.');
             }
@@ -302,10 +349,16 @@ public with sharing class EmailForwarder {
      * AuraEnabled method for LWC integration
      * Returns selected emails as EML content for client-side ZIP creation
      * Includes attachments in MIME multipart format
+     * Requires Allow_Email_Download custom permission
      */
     @AuraEnabled
     public static List<EmailContentWrapper> getEmailsForDownload(List<Id> emailIds) {
         try {
+            // Check custom permission first (bypass in test context)
+            if (!bypassPermissionChecks && !FeatureManagement.checkPermission(PERMISSION_DOWNLOAD)) {
+                throw new AuraHandledException('You do not have permission to download emails. Please contact your administrator.');
+            }
+            
             if (emailIds == null || emailIds.isEmpty()) {
                 throw new AuraHandledException('No emails selected for download.');
             }
@@ -621,5 +674,13 @@ public with sharing class EmailForwarder {
     public class EmailDetailWrapper {
         @AuraEnabled public String subject { get; set; }
         @AuraEnabled public Integer attachmentCount { get; set; }
+    }
+    
+    /**
+     * Wrapper class for user's feature permissions
+     */
+    public class FeaturePermissions {
+        @AuraEnabled public Boolean canForward { get; set; }
+        @AuraEnabled public Boolean canDownload { get; set; }
     }
 }

@@ -27,18 +27,20 @@
 
             <!-- Main Content - Only show when not loading and no error -->
             <template lwc:if={showContent}>
-                <!-- Recipient Email Input -->
-                <div class="slds-m-bottom_medium">
-                    <lightning-input
-                        type="email"
-                        label="Forward To Email Address"
-                        value={recipientEmail}
-                        onchange={handleRecipientChange}
-                        placeholder="Enter recipient email address"
-                        required
-                        message-when-value-missing="Please enter a recipient email address">
-                    </lightning-input>
-                </div>
+                <!-- Recipient Email Input - Only show if user can forward -->
+                <template lwc:if={showForwardSection}>
+                    <div class="slds-m-bottom_medium">
+                        <lightning-input
+                            type="email"
+                            label="Forward To Email Address"
+                            value={recipientEmail}
+                            onchange={handleRecipientChange}
+                            placeholder="Enter recipient email address"
+                            required
+                            message-when-value-missing="Please enter a recipient email address">
+                        </lightning-input>
+                    </div>
+                </template>
 
                 <!-- No Emails Message -->
                 <template lwc:if={noEmails}>
@@ -77,21 +79,25 @@
                         onclick={handleClose}
                         class="slds-m-right_x-small">
                     </lightning-button>
-                    <lightning-button
-                        variant="neutral"
-                        label={downloadButtonLabel}
-                        onclick={handleDownload}
-                        disabled={isDownloadDisabled}
-                        icon-name="utility:download"
-                        class="slds-m-right_x-small">
-                    </lightning-button>
-                    <lightning-button
-                        variant="brand"
-                        label={sendButtonLabel}
-                        onclick={handleSend}
-                        disabled={isSendDisabled}
-                        icon-name="utility:email">
-                    </lightning-button>
+                    <template lwc:if={showDownloadButton}>
+                        <lightning-button
+                            variant="neutral"
+                            label={downloadButtonLabel}
+                            onclick={handleDownload}
+                            disabled={isDownloadDisabled}
+                            icon-name="utility:download"
+                            class="slds-m-right_x-small">
+                        </lightning-button>
+                    </template>
+                    <template lwc:if={showForwardSection}>
+                        <lightning-button
+                            variant="brand"
+                            label={sendButtonLabel}
+                            onclick={handleSend}
+                            disabled={isSendDisabled}
+                            icon-name="utility:email">
+                        </lightning-button>
+                    </template>
                 </div>
             </div>
         </div>

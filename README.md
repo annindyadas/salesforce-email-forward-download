@@ -57,11 +57,19 @@ This feature provides a user-friendly modal interface that displays all emails a
 |--------|--------|-------------|
 | `Download` | EmailMessage | Downloads the email as an EML file |
 
+### Custom Permissions
+
+| Custom Permission | Description |
+|-------------------|-------------|
+| `Allow_Email_Forwarding` | Enables the email forwarding feature |
+| `Allow_Email_Download` | Enables the email download feature |
+
 ### Permission Sets
 
-| Permission Set | Description |
-|----------------|-------------|
-| `Email_Forwarder_Access` | Grants access to Apex classes and Flow required for the feature |
+| Permission Set | Custom Permissions | Description |
+|----------------|-------------------|-------------|
+| `Email_Forwarder_Full_Access` | Forward + Download | Full access - for Sys Admins and power users |
+| `Email_Forwarder_Download_Only` | Download only | Limited access - for standard users |
 
 ## 📦 Installation
 
@@ -94,8 +102,16 @@ After installing the package, complete the following steps:
 
 ### 1. Assign Permission Set
 
+Assign the appropriate permission set based on user needs:
+
+| User Type | Permission Set | Capabilities |
+|-----------|----------------|--------------|
+| Sys Admins / Power Users | **Email Forwarder Full Access** | Forward + Download |
+| Standard Users | **Email Forwarder Download Only** | Download only |
+
+**Steps:**
 1. Go to **Setup → Permission Sets**
-2. Click **Email Forwarder Access**
+2. Click the appropriate permission set
 3. Click **Manage Assignments** → **Add Assignment**
 4. Select users who need access to the feature
 5. Click **Assign**
@@ -156,10 +172,12 @@ If your org uses Dynamic Actions on Lightning Record Pages:
 
 | Step | Task | Included in Package | Manual Action |
 |------|------|:-------------------:|:-------------:|
-| 1 | Permission Set | ✅ | Assign to users |
-| 2 | Email Deliverability | — | Configure in Setup |
+| 1 | Permission Sets | ✅ | Assign to users based on role |
+| 2 | Email Deliverability | — | Configure in Setup (for Send) |
 | 3 | Download Action (EmailMessage) | ✅ | Add to page layout |
 | 4 | Forward Emails Action (Other Objects) | — | Create action & add to layout |
+
+> **Note:** The feature automatically shows/hides Forward and Download buttons based on the user's assigned custom permissions. Users with only the "Download Only" permission set will only see the Download button.
 
 ## 🖥️ Usage
 
@@ -182,6 +200,9 @@ force-app/
         │   ├── EmailForwarder.cls-meta.xml
         │   ├── EmailForwarderTest.cls
         │   └── EmailForwarderTest.cls-meta.xml
+        ├── customPermissions/
+        │   ├── Allow_Email_Download.customPermission-meta.xml
+        │   └── Allow_Email_Forwarding.customPermission-meta.xml
         ├── flows/
         │   └── Download_Email.flow-meta.xml
         ├── lwc/
@@ -189,7 +210,8 @@ force-app/
         │   ├── emailForwarderModal/
         │   └── emailUtils/
         ├── permissionsets/
-        │   └── Email_Forwarder_Access.permissionset-meta.xml
+        │   ├── Email_Forwarder_Download_Only.permissionset-meta.xml
+        │   └── Email_Forwarder_Full_Access.permissionset-meta.xml
         └── quickActions/
             └── EmailMessage.Download.quickAction-meta.xml
 ```
