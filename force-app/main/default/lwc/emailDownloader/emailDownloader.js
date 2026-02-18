@@ -1,20 +1,46 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { CloseActionScreenEvent } from 'lightning/actions';
 import { FlowNavigationFinishEvent } from 'lightning/flowSupport';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getEmailsForDownload from '@salesforce/apex/EmailForwarder.getEmailsForDownload';
+import hasDownloadPermission from '@salesforce/apex/EmailForwarder.hasDownloadPermission';
 import { downloadEmlFile, reduceErrors } from 'c/emailUtils';
 
 /**
  * Email Downloader Component (Screen Action / Flow Screen)
  * Downloads a single email message as an EML file from the EmailMessage record page
+ * Requires Allow_Email_Download custom permission
  * 
  * @author Annindya Das
- * @version 1.0
+ * @version 1.1 - Added permission check
  */
 export default class EmailDownloader extends LightningElement {
     _recordId;
     _isDownloading = false;
+    _canDownload = false;
+    _permissionChecked = false;
+    
+    /**
+     * Wire to check download permission
+     */
+    @wire(hasDownloadPermission)
+    wiredPermission({ error, data }) {
+        if (data !== undefined) {
+            this._canDownload = data;
+            this._permissionChecked = true;
+            // If recordId was set before permission check completed, try download now
+            if (this._recordId && this._canDownload) {
+                this.downloadEmail();
+            } else if (this._recordId && !this._canDownload) {
+                this.showToast('Access Denied', 'You do not have permission to download emails. Please contact your administrator.', 'error');
+                this.closeAction();
+            }
+        } else if (error) {
+            this._permissionChecked = true;
+            this.showToast('Error', 'Unable to verify permissions: ' + reduceErrors(error), 'error');
+            this.closeAction();
+        }
+    }
     
     // Flow support - available actions
     @api availableActions = [];
@@ -26,8 +52,14 @@ export default class EmailDownloader extends LightningElement {
     set recordId(value) {
         if (value && value !== this._recordId) {
             this._recordId = value;
-            // Auto-trigger download when recordId is set
-            this.downloadEmail();
+            // Only auto-trigger if permission already checked and granted
+            if (this._permissionChecked && this._canDownload) {
+                this.downloadEmail();
+            } else if (this._permissionChecked && !this._canDownload) {
+                this.showToast('Access Denied', 'You do not have permission to download emails. Please contact your administrator.', 'error');
+                this.closeAction();
+            }
+            // If permission not yet checked, wire handler will trigger download
         }
     }
     
@@ -35,7 +67,7 @@ export default class EmailDownloader extends LightningElement {
      * Download the email as EML file
      */
     async downloadEmail() {
-        if (this._isDownloading || !this._recordId) {
+        if (this._isDownloading || !this._recordId || !this._canDownload) {
             return;
         }
         this._isDownloading = true;
