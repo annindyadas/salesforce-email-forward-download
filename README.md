@@ -1,3 +1,9 @@
+# Email Forward & Download for Salesforce
+
+A Lightning Web Component (LWC) solution for Salesforce that allows users to select, download, and forward emails from any Salesforce object record as `.eml` file attachments.
+
+![Salesforce](https://img.shields.io/badge/Salesforce-00A1E0?style=for-the-badge&logo=salesforce&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 # Salesforce Email Forwarder LWC
 
 A Lightning Web Component (LWC) solution for Salesforce that allows users to select and forward emails from any Salesforce object record as `.eml` file attachments.
@@ -7,14 +13,14 @@ A Lightning Web Component (LWC) solution for Salesforce that allows users to sel
 
 ## 📋 Overview
 
-This feature provides a user-friendly modal interface that displays all emails associated with a Salesforce record. Users can select one or multiple emails using checkboxes and forward them to any email address as `.eml` attachments, preserving the original email format.
+Email Forward & Download provides a user-friendly modal interface that displays all emails associated with a Salesforce record. Users can select one or multiple emails using checkboxes, download them as `.eml` files, or forward them to any email address as `.eml` attachments, preserving the original email format.
 
 ## ✨ Features
 
 - **Universal Compatibility** - Works with any Salesforce object that has associated EmailMessage records (Cases, Opportunities, Accounts, etc.)
 - **Interactive Data Table** - Lightning Datatable with sortable columns and row-level checkboxes for email selection
 - **Bulk Selection** - Select multiple emails at once using the header checkbox
-- **EML Format** - Emails are forwarded as `.eml` files that can be opened in any email client
+- **EML Format** - Emails are forwarded or downloaded as `.eml` files that can be opened in any email client
 - **Download as ZIP** - Download all selected emails as a single ZIP file containing individual `.eml` files (no external libraries required)
 - **Configurable Recipient** - Enter any email address as the forwarding destination
 - **Modern UI** - Clean, responsive design with SLDS styling and custom blue header
@@ -23,7 +29,7 @@ This feature provides a user-friendly modal interface that displays all emails a
 
 ### 📎 Attachment Support
 
-- **Forward with Attachments** - All original email attachments (ContentDocumentLinks and Attachments) are automatically included when forwarding emails
+- **Forward with Attachments** – All original email attachments (ContentDocumentLinks and Attachments) are automatically included when forwarding emails
 - **Download with Attachments** - When downloading emails as a ZIP file, all attachments are bundled together with the `.eml` files
 - **Preserved File Names** - Original attachment filenames are preserved for easy identification
 - **Multiple Attachment Types** - Supports all file types including documents, images, PDFs, and more
@@ -34,7 +40,7 @@ This feature provides a user-friendly modal interface that displays all emails a
 
 | Class | Description |
 |-------|-------------|
-| `EmailForwarder.cls` | Main controller class with methods for retrieving emails and forwarding them as EML attachments |
+| `EmailForwarder.cls` | Main controller class with methods for retrieving, downloading, and forwarding emails as EML attachments |
 | `EmailForwarderTest.cls` | Comprehensive test class with 22+ test methods for security and functionality coverage |
 
 ### Lightning Web Components

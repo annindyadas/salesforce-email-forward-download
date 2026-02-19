@@ -2,11 +2,21 @@
   "packageDirectories": [
     {
       "path": "force-app",
-      "default": true
+      "default": true,
+      "package": "Email Forward & Download",
+      "versionName": "Spring '26",
+      "versionNumber": "1.0.0.NEXT",
+      "versionDescription": "Email Forward & Download for Salesforce - Forward and download emails as EML files with attachments.",
+      "definitionFile": "config/project-scratch-def.json"
     }
   ],
-  "name": "EmailForwarder",
-  "namespace": "",
+  "name": "Email Forward & Download",
+  "namespace": "adasApps",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "65.0"
+  "sourceApiVersion": "65.0",
+  "packageAliases": {
+    "Email Forward & Download": "0Hoaj0000001JJxCAM",
+    "Email Forward & Download@1.0.0-1": "04taj000000NS0PAAW",
+    "Email Forward & Download@1.0.0-2": "04taj000000NSd7AAG"
+  }
 }
