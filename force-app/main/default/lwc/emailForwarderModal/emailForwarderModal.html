@@ -37,8 +37,10 @@
                             onchange={handleRecipientChange}
                             placeholder="Enter recipient email address"
                             required
-                            message-when-value-missing="Please enter a recipient email address">
-                        </lightning-input>
+                        ></lightning-input>
+                        <template lwc:if={showRecipientError}>
+                            <div class="slds-text-color_error slds-m-top_x-small">Please enter a recipient email address.</div>
+                        </template>
                     </div>
                 </template>
 

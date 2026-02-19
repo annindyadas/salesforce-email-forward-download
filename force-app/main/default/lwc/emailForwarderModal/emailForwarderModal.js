@@ -80,6 +80,7 @@ export default class EmailForwarderModal extends LightningElement {
     
     // Recipient email - user must enter this
     @track recipientEmail = '';
+    @track showRecipientError = false;
     
     // Feature permissions
     @track canForward = false;
@@ -91,8 +92,8 @@ export default class EmailForwarderModal extends LightningElement {
     @wire(getUserPermissions)
     wiredPermissions({ error, data }) {
         if (data) {
-            this.canForward = data.canForward;
-            this.canDownload = data.canDownload;
+            this.canForward = !!data.canForward;
+            this.canDownload = !!data.canDownload;
         } else if (error) {
             console.error('Error loading permissions:', error);
             // Default to false if error
@@ -226,6 +227,8 @@ export default class EmailForwarderModal extends LightningElement {
     // Handle recipient email input change
     handleRecipientChange(event) {
         this.recipientEmail = event.target.value;
+        // Hide error as user types
+        this.showRecipientError = false;
     }
 
     // Handle the Send button click
@@ -236,7 +239,7 @@ export default class EmailForwarderModal extends LightningElement {
         }
 
         if (!this.recipientEmail) {
-            this.showToast('Warning', 'Please enter a recipient email address.', 'warning');
+            this.showRecipientError = true;
             return;
         }
 
