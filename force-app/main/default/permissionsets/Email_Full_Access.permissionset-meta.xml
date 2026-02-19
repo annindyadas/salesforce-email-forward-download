@@ -16,11 +16,11 @@
         <apexClass>EmailForwarderTest</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description>Full access to Email Forwarder features - allows both downloading and forwarding emails. Recommended for System Administrators and power users.</description>
+    <description>Full access to Email features - allows both downloading and forwarding emails. Recommended for System Administrators and power users.</description>
     <flowAccesses>
         <enabled>true</enabled>
         <flow>Download_Email</flow>
     </flowAccesses>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>Email Forwarder Full Access</label>
+    <label>Email Full Access</label>
 </PermissionSet>

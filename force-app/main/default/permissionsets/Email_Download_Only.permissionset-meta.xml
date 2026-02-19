@@ -12,11 +12,11 @@
         <apexClass>EmailForwarderTest</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description>Download-only access to Email Forwarder features - allows downloading emails but not forwarding. Recommended for standard users who need email archival capabilities.</description>
+    <description>Download-only access to Email features - allows downloading emails but not forwarding. Recommended for standard users who need email archival capabilities.</description>
     <flowAccesses>
         <enabled>true</enabled>
         <flow>Download_Email</flow>
     </flowAccesses>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>Email Forwarder Download Only</label>
+    <label>Email Download Only</label>
 </PermissionSet>
