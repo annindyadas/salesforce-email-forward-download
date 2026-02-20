@@ -5,11 +5,11 @@
       "versionNumber": "1.0.1.NEXT",
       "path": "force-app",
       "default": true,
-      "package": "Email Forward & Download",
+      "package": "Email F&D (Forward & Download)",
       "versionDescription": "Email Forward & Download for Salesforce - Forward and download emails as EML files with attachments."
     }
   ],
-  "name": "Email Forward & Download",
+  "name": "Email F&D (Forward & Download)",
   "namespace": "adasApps",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "65.0",
