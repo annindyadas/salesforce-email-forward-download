@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <customPermissions>
-        <enabled>true</enabled>
-        <name>Allow_Email_Download</name>
-    </customPermissions>
     <classAccesses>
         <apexClass>EmailForwarder</apexClass>
         <enabled>true</enabled>
@@ -12,6 +8,14 @@
         <apexClass>EmailForwarderTest</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Allow_Email_Download</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Allow_Email_Forwarding</name>
+    </customPermissions>
     <description>Download-only access to Email features - allows downloading emails but not forwarding. Recommended for standard users who need email archival capabilities.</description>
     <flowAccesses>
         <enabled>true</enabled>

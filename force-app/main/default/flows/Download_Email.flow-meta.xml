@@ -5,6 +5,7 @@
     <description>This flow calls the emailDownloader LWC that executes the JS to receive Email Message record id and download the email as eml file</description>
     <environments>Default</environments>
     <interviewLabel>Download Email {!$Flow.CurrentDateTime}</interviewLabel>
+    <isAdditionalPermissionRequiredToRun>true</isAdditionalPermissionRequiredToRun>
     <label>Download Email</label>
     <processMetadataValues>
         <name>BuilderType</name>
@@ -25,6 +26,7 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <runInMode>DefaultMode</runInMode>
     <screens>
         <name>Email_Download</name>
         <label>Email Download</label>
