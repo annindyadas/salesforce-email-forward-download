@@ -104,7 +104,7 @@ This ensures that only administrators have access to package features by default
 git clone https://github.com/YOUR_USERNAME/salesforce-email-fd-forward-download.git
 
 # Navigate to the project directory
-cd salesforce-email-forwarder
+cd salesforce-email-fd-forward-download
 
 # Authenticate with your Salesforce org
 sf org login web -a MyOrg
